@@ -1,0 +1,35 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: electrical-repair-postgres
+    environment:
+      POSTGRES_DB: electricalrepairdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  backend:
+    image: yoshithapasumarthi/electrical-repair-backend:latest
+    container_name: electrical-repair-backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  frontend:
+    image: yoshithapasumarthi/electrical-repair-frontend:latest
+    container_name: electrical-repair-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
